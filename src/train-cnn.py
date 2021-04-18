@@ -4,6 +4,7 @@ from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Conv2D, Dense, Dropout, Activation, Flatten, MaxPooling2D
 
 DATADIR = '../ml-data/dice-set/train/'
+MODELDIR = '../gen/models/'
 
 # Load data
 X = pickle.load(open(DATADIR + 'X.pickle', 'rb'))
@@ -29,6 +30,10 @@ model.add(Conv2D(64, (3,3)))
 model.add(Activation('relu'))
 model.add(MaxPooling2D(pool_size=(2,2)))
 
+model.add(Conv2D(64, (3,3)))
+model.add(Activation('relu'))
+model.add(MaxPooling2D(pool_size=(2,2)))
+
 model.add(Flatten())
 model.add(Dense(64))
 model.add(Activation('relu'))
@@ -39,6 +44,6 @@ model.add(Activation('sigmoid'))
 model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
 
 
-model.fit(X, y, batch_size=32, epochs=2, validation_split=0.3)
+model.fit(X, y, batch_size=16, epochs=5, validation_split=0.3)
 
-model.save(DATADIR + 'dice-cnn-4.model')
+model.save(MODELDIR + 'd12-d4-conv-64_1-dense-64_16-batch_5-epoch.model')

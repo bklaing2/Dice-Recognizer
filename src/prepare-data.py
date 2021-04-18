@@ -5,9 +5,9 @@ import numpy as np
 import cv2
 
 DATADIR = '../ml-data/dice-set/train'
-CATEGORIES = ['d6', 'd20']
+CATEGORIES = ['d12', 'd4']
 
-IMG_SIZE = 64
+IMG_SIZE = 128
 
 
 
