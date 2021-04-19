@@ -1,36 +1,44 @@
+import numpy as np
 import cv2
-import tensorflow as tf
-
+from tensorflow.keras.models import load_model
+from tensorflow.keras.preprocessing.image import load_img, img_to_array
 
 DATADIR = '../ml-data/dice-set/'
 MODELDIR = '../gen/models/'
-MODEL = 'd12-d4-conv-64_1-dense-64_16-batch_5-epoch.model'
+MODEL = 'test-guys.model'
 
-CATEGORIES = ['d12', 'd4']
-IMG_SIZE = 128
+CATEGORIES = ['d4', 'd6', 'd8', 'd10', 'd12', 'd20']
+IMG_SIZE = 48
 
 def prepare(filepath):
-    img_array = cv2.imread(filepath, cv2.IMREAD_GRAYSCALE)
+    img_array = cv2.imread(filepath)#, cv2.IMREAD_GRAYSCALE)
     new_array = cv2.resize(img_array, (IMG_SIZE, IMG_SIZE))
-
+    cv2.imshow('image', new_array)
+    cv2.waitKey(0)
     return new_array.reshape(-1, IMG_SIZE, IMG_SIZE, 1)
 
 
-model = tf.keras.models.load_model(MODELDIR + MODEL)
+model = load_model(MODELDIR + MODEL)
 
-for i in range(20):
-    prediction = model.predict([prepare(f'{DATADIR}/valid/{CATEGORIES[0]}/{i}.jpg')])
-    prediction = CATEGORIES[round(prediction[0][0])]
-    print(prediction)
 
-print ('\n\n')
+for category in CATEGORIES:
+    print(category, ':')
+    for i in range(20):
+        image = load_img(f'{DATADIR}/valid/{category}/{i}.jpg', target_size=(IMG_SIZE, IMG_SIZE))
+        input_arr = img_to_array(image)
+        input_arr = np.array([input_arr])
+        prediction = model.predict(input_arr)
 
-for i in range(20):
-    prediction = model.predict([prepare(f'{DATADIR}/valid/{CATEGORIES[1]}/{i}.jpg')])
-    prediction = CATEGORIES[round(prediction[0][0])]
-    print(prediction)
+        # OLD
+        # prediction = model.predict([prepare(f'{DATADIR}/valid/{category}/{i}.jpg')])
 
-print ('\n\n')
+
+        prediction = np.argmax(prediction[0])
+        print('  ', CATEGORIES[prediction])
+        # print('  ', prediction[0])
+
+    print ('\n\n')
+
 
 # TESTS = [
 #     '../gen/die2.jpg',

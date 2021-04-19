@@ -3,12 +3,17 @@ import os
 import pickle
 import numpy as np
 import cv2
+from tensorflow.keras.preprocessing.image import ImageDataGenerator
 
 DATADIR = '../ml-data/dice-set/train'
-CATEGORIES = ['d12', 'd4']
+CATEGORIES = ['d4', 'd6', 'd8', 'd10', 'd12', 'd20']
 
-IMG_SIZE = 128
+IMG_SIZE = 48
 
+
+batch_size_train=10
+batch_size_valid=10
+targetsize= 48
 
 
 
@@ -18,7 +23,8 @@ def create_training_data():
 
     for category in CATEGORIES:
         path = os.path.join(DATADIR, category)
-        class_num = CATEGORIES.index(category)
+        class_num = np.zeros(len(CATEGORIES))
+        class_num[CATEGORIES.index(category)] = 1
 
         for img in os.listdir(path):
             try:
